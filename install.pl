@@ -3,6 +3,8 @@ use strict;
 use warnings;
 
 sub install($);
+sub version($);
+sub selectSrcDir($);
 
 my $mod = "thinkpad_acpi.ko";
 my $modprobeConfFile = "/etc/modprobe.d/thinkpad_acpi.conf";
@@ -12,20 +14,11 @@ sub main(@){
   my $kernel = `uname -r`;
   chomp $kernel;
 
-  my ($major, $minor) = ($1, $2) if $kernel =~ /^(\d+)\.(\d+)/;
-  my $srcDir;
-  if($major < 3 or $minor < 3){
-    $srcDir = '3.2';
-  }elsif($minor < 8){
-    $srcDir = '3.3';
-  }elsif($minor < 10){
-    $srcDir = '3.8';
-  }else{
-    $srcDir = '3.10';
-  }
+  my $srcDir = selectSrcDir $kernel;
+  die "missing src dir\n" if not defined $srcDir or not -d $srcDir;
 
   print "installing version in $srcDir/\n";
-  chdir "$srcDir";
+  chdir $srcDir;
   $ENV{PWD} = "$ENV{PWD}/$srcDir";
 
   my $dir = "/lib/modules/$kernel/kernel/drivers/platform/x86/";
@@ -62,6 +55,32 @@ sub install($){
   print "remove and add module thinkpad_acpi\n";
   system "sudo modprobe -r thinkpad_acpi";
   system "sudo modprobe thinkpad_acpi";
+}
+
+sub version($){
+  my $s = shift;
+  my $minorOffset = 100000;
+  my ($maj, $min) = ($1, $2) if $s =~ /^(\d+)\.(\d+)/;
+  return $maj * $minorOffset + $min;
+}
+
+sub selectSrcDir($){
+  my $kernel = shift;
+  my $kv = version $kernel;
+
+  my @dirs = `ls`;
+  chomp foreach @dirs;
+  my %vs = map {version($_) => $_} grep {-d $_ and /^\d+\.\d+$/} @dirs;
+
+  my $prev;
+  for my $v(sort keys %vs){
+    my $dir = $vs{$v};
+    if($v > $kv){
+      return defined $prev ? $prev : $dir;
+    }
+    $prev = $dir;
+  }
+  return $prev;
 }
 
 &main(@ARGV);
