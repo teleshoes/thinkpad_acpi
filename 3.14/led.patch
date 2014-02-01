@@ -1,7 +1,10 @@
 171a172
 > 	TP_HKEY_EV_VOL_MUTE_MIC		= 0x101b, /* Microphone mute */
-5021a5023,5024
+5024c5025,5027
+< 	"tpacpi::thinkvantage",
+---
 > 	"tpacpi::unknown_led4",
+> 	"tpacpi::unknown_led5",
 > 	"tpacpi::mute_mic",
 5026c5029
 < #define TPACPI_SAFE_LEDS	0x1081U
