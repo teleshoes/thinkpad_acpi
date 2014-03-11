@@ -12,18 +12,24 @@ my $modprobeConfFile = "/etc/modprobe.d/thinkpad_acpi.conf";
 my $modprobeOpts = "options thinkpad_acpi fan_control=1\n";
 
 sub main(@){
-  my $kernel = `uname -r`;
-  chomp $kernel;
+  my $kernel = shift;
+  die "Usage: $0 [KERNEL]  {default is uname -r}\n" if @_ != 0;
 
+  my $curKernel = `uname -r`;
+  chomp $curKernel;
+
+  $kernel = $curKernel if not defined $kernel;
+
+  my $buildDir = "/lib/modules/$kernel/build";
+  my $modDir = "/lib/modules/$kernel/kernel/drivers/platform/x86/";
   my $srcDir = selectSrcDir $kernel;
+
+  die "unknown kernel/arch: $kernel\n" if not -d $modDir;
   die "missing src dir\n" if not defined $srcDir or not -d $srcDir;
 
   print "installing version in $srcDir/\n";
   chdir $srcDir;
   $ENV{PWD} = "$ENV{PWD}/$srcDir";
-
-  my $buildDir = "/lib/modules/$kernel/build";
-  my $modDir = "/lib/modules/$kernel/kernel/drivers/platform/x86/";
 
   createMakefile $buildDir;
 
