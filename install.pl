@@ -2,6 +2,7 @@
 use strict;
 use warnings;
 
+sub createMakefile($);
 sub install($);
 sub version($);
 sub selectSrcDir($);
@@ -21,16 +22,39 @@ sub main(@){
   chdir $srcDir;
   $ENV{PWD} = "$ENV{PWD}/$srcDir";
 
-  my $dir = "/lib/modules/$kernel/kernel/drivers/platform/x86/";
+  my $buildDir = "/lib/modules/$kernel/build";
+  my $modDir = "/lib/modules/$kernel/kernel/drivers/platform/x86/";
+
+  createMakefile $buildDir;
 
   system "patch thinkpad_acpi.c led.patch";
   system "make";
   system "patch -R thinkpad_acpi.c led.patch";
 
-  install $dir if -e $mod;
+  install $modDir if -e $mod;
 
   print "Cleaning..\n";
   system "make clean";
+  system "rm Makefile";
+}
+
+sub createMakefile($){
+  my $buildDir = shift;
+  my $cwd = $ENV{PWD};
+
+  my $makefileContent = ''
+    .  "obj-m += thinkpad_acpi.o\n"
+    .  "\n"
+    .  "all:\n"
+    .  "\tmake -C $buildDir M=$cwd modules\n"
+    .  "\n"
+    .  "clean:\n"
+    .  "\tmake -C $buildDir M=$cwd clean\n"
+    ;
+
+  open FH, "> Makefile";
+  print FH $makefileContent;
+  close FH;
 }
 
 sub install($){
