@@ -14,8 +14,8 @@ my $modprobeOpts = "options thinkpad_acpi fan_control=1\n";
 my $usage = "Usage: $0 [KERNEL]  {default is uname -r}\n";
 
 sub main(@){
+  die $usage if @_ > 1 or (@_ == 1 and $_[0] =~ /^(-h|--help)$/);
   my $kernel = shift;
-  die $usage if @_ != 0;
 
   my $curKernel = `uname -r`;
   chomp $curKernel;
