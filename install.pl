@@ -11,7 +11,15 @@ my $mod = "thinkpad_acpi.ko";
 my $modprobeConfFile = "/etc/modprobe.d/thinkpad_acpi.conf";
 my $modprobeOpts = "options thinkpad_acpi fan_control=1\n";
 
-my $usage = "Usage: $0 [KERNEL]  {default is uname -r}\n";
+my @kernels = `ls /lib/modules | sort -rV`;
+my $availKernels = join "      ", @kernels;
+
+my $usage = "Usage:
+  $0 [KERNEL]
+    KERNEL is a subdir of /lib/modules {default is `uname -r`}
+    available:
+      " . join("      ", @kernels) . "
+";
 
 sub main(@){
   die $usage if @_ > 1 or (@_ == 1 and $_[0] =~ /^(-h|--help)$/);
