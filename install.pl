@@ -11,9 +11,11 @@ my $mod = "thinkpad_acpi.ko";
 my $modprobeConfFile = "/etc/modprobe.d/thinkpad_acpi.conf";
 my $modprobeOpts = "options thinkpad_acpi fan_control=1\n";
 
+my $usage = "Usage: $0 [KERNEL]  {default is uname -r}\n";
+
 sub main(@){
   my $kernel = shift;
-  die "Usage: $0 [KERNEL]  {default is uname -r}\n" if @_ != 0;
+  die $usage if @_ != 0;
 
   my $curKernel = `uname -r`;
   chomp $curKernel;
