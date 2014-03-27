@@ -92,8 +92,12 @@ sub install($){
 sub version($){
   my $s = shift;
   my $minorOffset = 100000;
-  my ($maj, $min) = ($1, $2) if $s =~ /^(\d+)\.(\d+)/;
-  return $maj * $minorOffset + $min;
+  if($s =~ /^(\d+)\.(\d+)/){
+    my ($maj, $min) = ($1, $2);
+    return $maj * $minorOffset + $min;
+  }else{
+    die "Could not parse MAJOR.MINOR version of kernel '$s'\n";
+  }
 }
 
 sub selectSrcDir($){
