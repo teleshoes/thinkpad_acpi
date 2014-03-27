@@ -22,6 +22,10 @@ sub main(@){
 
   $kernel = $curKernel if not defined $kernel;
 
+  if(not defined version $kernel){
+    die "Could not parse MAJOR.MINOR version of kernel '$kernel'\n\n$usage";
+  }
+
   my $buildDir = "/lib/modules/$kernel/build";
   my $modDir = "/lib/modules/$kernel/kernel/drivers/platform/x86/";
   my $srcDir = selectSrcDir $kernel;
@@ -96,7 +100,7 @@ sub version($){
     my ($maj, $min) = ($1, $2);
     return $maj * $minorOffset + $min;
   }else{
-    die "Could not parse MAJOR.MINOR version of kernel '$s'\n";
+    return undef;
   }
 }
 
