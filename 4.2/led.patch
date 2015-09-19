@@ -1,0 +1,12 @@
+167a168
+> 	TP_HKEY_EV_VOL_MUTE_MIC		= 0x101b, /* Microphone mute */
+5283a5285,5286
+> 	"tpacpi::unknown_led4",
+> 	"tpacpi::mute_mic",
+5285c5288
+< #define TPACPI_SAFE_LEDS	0x1081U
+---
+> #define TPACPI_SAFE_LEDS	0xFFFFU
+5499a5503,5504
+> 	TPACPI_Q_LNV('6', 'U', 0x4087), /* T410s */
+> 	TPACPI_Q_LNV('8', 'B', 0xffff), /* W520 */
