@@ -10,3 +10,7 @@
 5499a5503,5504
 > 	TPACPI_Q_LNV('6', 'U', 0x4087), /* T410s */
 > 	TPACPI_Q_LNV('8', 'B', 0xffff), /* W520 */
+5508c5513
+< 	  .quirks = 0x1fffU,
+---
+> 	  .quirks = 0x5fffU,
