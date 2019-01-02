@@ -47,9 +47,15 @@ sub main(@){
 
   createMakefile $buildDir;
 
-  system "patch thinkpad_acpi.c led.patch";
+  my @patches = glob "*.patch";
+
+  for my $patch(@patches){
+    system "patch thinkpad_acpi.c $patch";
+  }
   system "make";
-  system "patch -R thinkpad_acpi.c led.patch";
+  for my $patch(reverse @patches){
+    system "patch -R thinkpad_acpi.c $patch";
+  }
 
   install $modDir if -e $mod;
 
