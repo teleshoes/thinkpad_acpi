@@ -50,11 +50,11 @@ sub main(@){
   my @patches = glob "*.patch";
 
   for my $patch(@patches){
-    system "patch thinkpad_acpi.c $patch";
+    system "patch thinkpad_acpi.c $patch --no-backup-if-mismatch";
   }
   system "make";
   for my $patch(reverse @patches){
-    system "patch -R thinkpad_acpi.c $patch";
+    system "patch -R thinkpad_acpi.c $patch --no-backup-if-mismatch";
   }
 
   install $modDir if -e $mod;
