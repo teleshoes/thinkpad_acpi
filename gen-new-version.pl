@@ -18,6 +18,14 @@ sub main(@){
     die "$newVersion already exists\n";
   }
 
+  my $gitBranch = `cd $LINUX_GIT_REPO ; git show -s --pretty=%d HEAD`;
+  if($gitBranch !~ /\bv$newVersion\b/){
+    die "ERROR: linux git repo HEAD is not v$newVersion\n";
+  }
+  if(not -f $THINKPAD_ACPI_C){
+    die "ERROR: \"$THINKPAD_ACPI_C\" file not found\n";
+  }
+
   run "mkdir", "$newVersion";
 
   run "cp", "$oldVersion/thinkpad_acpi.c", "$newVersion/old.c";
