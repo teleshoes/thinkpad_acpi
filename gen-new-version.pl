@@ -4,7 +4,8 @@ use warnings;
 
 sub run(@);
 
-my $kernelSrc = "$ENV{HOME}/Code/linux/drivers/platform/x86/thinkpad_acpi.c";
+my $LINUX_GIT_REPO = "$ENV{HOME}/Code/linux";
+my $THINKPAD_ACPI_C = "$LINUX_GIT_REPO/drivers/platform/x86/thinkpad_acpi.c";
 
 sub main(@){
   die "Usage: $0 OLD_VERSION NEW_VERSION\n" if @_ != 2;
@@ -22,7 +23,7 @@ sub main(@){
   run "cp", "$oldVersion/thinkpad_acpi.c", "$newVersion/old.c";
   run "cp", "$oldVersion/led.patch", "$newVersion/old.patch";
 
-  run "cp", $kernelSrc, "$newVersion/kernel.c";
+  run "cp", $THINKPAD_ACPI_C, "$newVersion/kernel.c";
 
   run "cp", "$newVersion/old.c", "$newVersion/old_patched.c";
   run "patch", "-p0", "$newVersion/old_patched.c", "$newVersion/old.patch";
