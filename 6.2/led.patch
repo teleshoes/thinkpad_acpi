@@ -1,0 +1,4 @@
+5803c5803
+< #define TPACPI_SAFE_LEDS	0x1481U
+---
+> #define TPACPI_SAFE_LEDS	0xFFFFU
